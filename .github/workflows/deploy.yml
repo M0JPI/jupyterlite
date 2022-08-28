@@ -47,9 +47,6 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v1
 
-
-
-
   release:
     needs: deploy
     permissions:
@@ -58,17 +55,17 @@ jobs:
   
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
     runs-on: ubuntu-latest
     steps:
       - name: Generate release tag
         id: tag
         run: |
-          echo "::set-output name=release_tag::UserBuild_$(date +"%Y.%m.%d_%H-%M")"
-      - name: Release user firmware
+          echo "::set-output name=release_tag::GitHubBuild_$(date +"%Y.%m.%d_%H-%M")"
+      - name: Create a jupyterlite static release
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.tag.outputs.release_tag }}
+          files: github-pages
