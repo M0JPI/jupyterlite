@@ -46,7 +46,10 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
-        
+
+
+
+
   release:
     needs: deploy
     permissions:
@@ -59,6 +62,13 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - name: Release GitHub Pages
-        id: release
+      - name: Generate release tag
+        id: tag
+        run: |
+          echo "::set-output name=release_tag::UserBuild_$(date +"%Y.%m.%d_%H-%M")"
+      - name: Release user firmware
         uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag.outputs.release_tag }}
